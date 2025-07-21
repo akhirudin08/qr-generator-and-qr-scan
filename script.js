@@ -182,3 +182,31 @@ function sendViaWhatsApp() {
   const message = encodeURIComponent(`Hasil scan:\n${lastScan[0]}\nWaktu: ${lastScan[1]}`);
   window.open(`https://wa.me/?text=${message}`, '_blank');
 }
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').then(() => {
+    console.log('Service worker registered');
+  });
+}
+let deferredPrompt;
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+});
+
+function promptInstall() {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(choice => {
+      if (choice.outcome === 'accepted') {
+        console.log('User accepted install');
+      } else {
+        console.log('User dismissed install');
+      }
+      deferredPrompt = null;
+    });
+  } else {
+    alert("Install belum tersedia. Coba akses dari browser di HP.");
+  }
+}
+
