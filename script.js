@@ -87,30 +87,32 @@ function startScanner() {
   html5QrCode = new Html5Qrcode("reader");
 
   Html5Qrcode.getCameras().then(devices => {
-    if (devices.length) {
-      const cameraId = devices[0].id;
-      html5QrCode.start(
-        cameraId,
-        { fps: 10, qrbox: { width: 250, height: 250 } },
-        qrCodeMessage => {
-          const now = new Date().toLocaleString();
-          scanHistory.push([qrCodeMessage, now]);
-          scanResult.innerHTML = `✔ QR ditemukan:<br><a href="${qrCodeMessage}" target="_blank">${qrCodeMessage}</a>`;
-          const row = document.createElement('tr');
-          row.innerHTML = `<td><a href="${qrCodeMessage}" target="_blank">${qrCodeMessage}</a></td><td>${now}</td>`;
-          tbody.appendChild(row);
-          html5QrCode.stop();
-        },
-        errorMessage => {}
-      ).catch(err => {
-        scanResult.textContent = `❌ Gagal memulai scanner: ${err}`;
-      });
-    } else {
-      scanResult.textContent = 'Tidak ada kamera terdeteksi.';
-    }
-  }).catch(err => {
-    scanResult.textContent = `❌ Kesalahan kamera: ${err}`;
-  });
+  if (devices.length) {
+    const backCam = devices.find(d => d.label.toLowerCase().includes('back')) || devices[0];
+    const cameraId = backCam.id;
+
+    html5QrCode.start(
+      cameraId,
+      { fps: 10, qrbox: { width: 250, height: 250 } },
+      qrCodeMessage => {
+        const now = new Date().toLocaleString();
+        scanHistory.push([qrCodeMessage, now]);
+        scanResult.innerHTML = `✔ QR ditemukan:<br><a href="${qrCodeMessage}" target="_blank">${qrCodeMessage}</a>`;
+        const row = document.createElement('tr');
+        row.innerHTML = `<td><a href="${qrCodeMessage}" target="_blank">${qrCodeMessage}</a></td><td>${now}</td>`;
+        tbody.appendChild(row);
+        html5QrCode.stop();
+      },
+      errorMessage => {}
+    ).catch(err => {
+      scanResult.textContent = `❌ Gagal memulai scanner: ${err}`;
+    });
+  } else {
+    scanResult.textContent = 'Tidak ada kamera terdeteksi.';
+  }
+}).catch(err => {
+  scanResult.textContent = `❌ Kesalahan kamera: ${err}`;
+});
 }
 
 function stopScanner() {
