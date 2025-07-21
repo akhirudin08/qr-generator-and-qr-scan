@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>QR Generator & QR Scan</title>
   <link rel="stylesheet" href="style.css" />
+  <link rel="manifest" href="manifest.json" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
   <script src="https://unpkg.com/html5-qrcode"></script>
 </head>
@@ -18,6 +19,10 @@
 
     <!-- GENERATE TAB -->
     <div id="generateTab" class="tab-content active">
+      <button onclick="promptInstall()" class="wide-button">
+  📲 Tambahkan ke Layar Utama
+</button>
+
       <h2>QR Code Generator</h2>
       <input type="text" id="linkInput" placeholder="Paste link di sini" />
       <input type="file" id="imgInput" accept="image/*" />
